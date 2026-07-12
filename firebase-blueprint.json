@@ -1,0 +1,203 @@
+{
+  "entities": {
+    "Student": {
+      "title": "Student",
+      "description": "Student registration information in the Al-Azhar Institute",
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Full name of the student"
+        },
+        "stage": {
+          "type": "string",
+          "enum": ["prep", "secondary"],
+          "description": "Educational stage: prep (3 years) or secondary (2 years)"
+        },
+        "grade": {
+          "type": "string",
+          "enum": ["1_prep", "2_prep", "3_prep", "1_secondary", "2_secondary"],
+          "description": "Specific grade level"
+        },
+        "classRoom": {
+          "type": "string",
+          "description": "Class identifier (e.g., A, B, 1/2)"
+        },
+        "madhhab": {
+          "type": "string",
+          "enum": ["hanafi", "shafii", "maliki"],
+          "description": "Islamic Jurisprudence School (Mabhab) of the student"
+        },
+        "nationalId": {
+          "type": "string",
+          "description": "14-digit Egyptian national ID"
+        },
+        "birthDate": {
+          "type": "string",
+          "description": "Date of birth (YYYY-MM-DD)"
+        },
+        "gender": {
+          "type": "string",
+          "enum": ["male", "female"],
+          "description": "Gender of the student"
+        },
+        "guardianName": {
+          "type": "string",
+          "description": "Full name of the parent or guardian"
+        },
+        "guardianPhone": {
+          "type": "string",
+          "description": "Mobile number of the guardian"
+        },
+        "address": {
+          "type": "string",
+          "description": "Physical address"
+        },
+        "enrollmentStatus": {
+          "type": "string",
+          "enum": ["new", "repeating"],
+          "description": "Enrollment status: new student or repeating year"
+        },
+        "notes": {
+          "type": "string",
+          "description": "Additional remarks"
+        },
+        "createdAt": {
+          "type": "integer",
+          "description": "Creation timestamp"
+        }
+      },
+      "required": [
+        "name",
+        "stage",
+        "grade",
+        "classRoom",
+        "madhhab",
+        "nationalId",
+        "gender",
+        "guardianName",
+        "guardianPhone",
+        "createdAt"
+      ]
+    },
+    "AttendanceRecord": {
+      "title": "AttendanceRecord",
+      "description": "Daily attendance log of a student",
+      "type": "object",
+      "properties": {
+        "studentId": {
+          "type": "string",
+          "description": "ID of the student"
+        },
+        "studentName": {
+          "type": "string",
+          "description": "Cached full name of the student"
+        },
+        "grade": {
+          "type": "string",
+          "description": "Grade level of the student at the time of log"
+        },
+        "classRoom": {
+          "type": "string",
+          "description": "Classroom identifier"
+        },
+        "date": {
+          "type": "string",
+          "format": "date",
+          "description": "Date of attendance (YYYY-MM-DD)"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["present", "absent", "excused"],
+          "description": "Attendance status"
+        },
+        "notes": {
+          "type": "string",
+          "description": "Reason for absence or other remarks"
+        },
+        "updatedAt": {
+          "type": "integer",
+          "description": "Timestamp of modification"
+        }
+      },
+      "required": [
+        "studentId",
+        "studentName",
+        "grade",
+        "classRoom",
+        "date",
+        "status",
+        "updatedAt"
+      ]
+    },
+    "StudentTermGrades": {
+      "title": "StudentTermGrades",
+      "description": "Academic scores for a student for a specific term and year",
+      "type": "object",
+      "properties": {
+        "studentId": {
+          "type": "string",
+          "description": "Reference ID to student document"
+        },
+        "term": {
+          "type": "string",
+          "enum": ["term1", "term2"],
+          "description": "Academic term"
+        },
+        "academicYear": {
+          "type": "string",
+          "description": "Educational year (e.g., 2025/2026)"
+        },
+        "grades": {
+          "type": "object",
+          "description": "Key-value pair of subjectId and their respective grades details"
+        },
+        "totalGradesSum": {
+          "type": "number",
+          "description": "Sum of grades acquired across all subjects"
+        },
+        "maxGradesSum": {
+          "type": "number",
+          "description": "Total obtainable grade sum across applicable subjects"
+        },
+        "gpaPercentage": {
+          "type": "number",
+          "description": "Overall percentage (0 to 100)"
+        },
+        "isOverallPassed": {
+          "type": "boolean",
+          "description": "Success status"
+        },
+        "updatedAt": {
+          "type": "integer",
+          "description": "Timestamp of modification"
+        }
+      },
+      "required": [
+        "studentId",
+        "term",
+        "academicYear",
+        "grades",
+        "totalGradesSum",
+        "maxGradesSum",
+        "gpaPercentage",
+        "isOverallPassed",
+        "updatedAt"
+      ]
+    }
+  },
+  "firestore": {
+    "/students/{studentId}": {
+      "schema": "Student",
+      "description": "Student master registry files"
+    },
+    "/attendance/{attendanceId}": {
+      "schema": "AttendanceRecord",
+      "description": "Daily attendance registers indexed by composite studentId_date keys"
+    },
+    "/grades/{gradeId}": {
+      "schema": "StudentTermGrades",
+      "description": "Semester marks records indexed by composite studentId_year_term keys"
+    }
+  }
+}
